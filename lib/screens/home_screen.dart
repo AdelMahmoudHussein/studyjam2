@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import '../models/photo.dart';
 import '../widgets/menu.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,6 +26,26 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+
+  _addPhoto() async {
+    final String num = Random().nextInt(5000).toString();
+    final url = 'https://jsonplaceholder.typicode.com/photos/$num';
+    final response = await http.get(url);
+    final parsedResponse = jsonDecode(response.body);
+    final photo = Photo(
+      albumId:parsedResponse['albumId'],
+      id:parsedResponse['id'],
+      title:parsedResponse['title'],
+      url:parsedResponse['url'],
+      thumbnailUrl:parsedResponse['thumbnailUrl']
+      );
+    setState(() {
+      myList.add(photo.url);
+      }
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,18 +55,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Center(
         child: (myList.length >0) 
-        ?
-          Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-            child: ListView.builder(
-              // itemCount: myList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildMyList(myList[index]);
-              },
-            ),
-          ) 
-        :
-          CircularProgressIndicator(),
+        ?Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: ListView.builder(
+            itemCount: myList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _buildMyList(myList[index]);
+            }, 
+          ), 
+        )
+        :CircularProgressIndicator(),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -53,16 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _addPhoto(){
-    print('Start');
-    Future.delayed(
-      Duration(seconds: 5),
-      (){
-        print("It's me after 5 Seconds");
-      }
-    
-    );
-  }
 }
 
 
