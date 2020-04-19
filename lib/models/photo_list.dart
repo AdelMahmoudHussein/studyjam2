@@ -6,7 +6,7 @@ class PhotoList extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return GridView.builder(
       itemCount: photos.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(
@@ -14,7 +14,8 @@ class PhotoList extends StatelessWidget {
           height: 200,
           child: Image.network(photos[index].url),
         );
-      },
+      }, 
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     )
     ;
   }
